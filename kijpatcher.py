@@ -10,7 +10,7 @@
     We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with
     Shenzhen JLC Technology Group Co., Ltd and its subsidiaries.
 
-    JLC and EasyEDA are registered trademarks of Shenzhen JLC Technology Group Co., Ltd and its subsidiaries
+    JLC and EasyEDA are registered trademarks of Shenzhen JLC Technology Group Co., Ltd and its subsidiaries.
     We makes contextual use of the trademarks of Shenzhen JLC Technology Group Co., Ltd and its subsidiaries
     to indicate the function of the program.
 """
