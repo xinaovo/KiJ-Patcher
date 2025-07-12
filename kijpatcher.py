@@ -162,7 +162,7 @@ if __name__ == "__main__":
 
     outputFilePath = ""
     if args.output_file == None:
-        outputFilePath = args.input_folder + "/" + "PATCHED"  + '-' + timestamp + ".zip"
+        outputFilePath = args.input_folder + "/" + "Gerber"  + '-' + timestamp + ".zip"
     else:
         outputFilePath = args.output_file
 
