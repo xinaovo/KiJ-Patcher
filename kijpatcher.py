@@ -28,11 +28,11 @@ file_filter = ('.gbl','.gbs','.gbp','.gbo','.gm1','gm13',
                '.gtl','.gts','.gtp','.gto','.drl','.G1',
                '.G2','.gko')
 
-#EasyEDA current version
-jlcEditorVersion = "6.5.39"
+# EasyEDA version string
+jlcEditorVersion = "6.5.50"
 
-#Generate header with current time
-jlcHeader="""G04 Layer: BottomLayer*
+# Generate header with current time
+gerberHeader="""G04 Layer: BottomLayer*
 G04 EasyEDA v{}, {}*
 G04 Gerber Generator version 0.2*
 G04 Scale: 100 percent, Rotated: No, Reflected: No *
@@ -45,15 +45,15 @@ jlc_order_tips_txt="""如何进行PCB下单
 https://docs.lceda.cn/cn/PCB/Order-PCB"""
 
 # 两张对应表，分别根据结尾和文件名来判断该给什么生成的文件什么名称
-replace_list_end = [('.gbl',"Gerber_BottomLayer.GBL"),
-                    ('.gko',"Gerber_BoardOutlineLayer.GKO"),
-                    ('.gbp',"Gerber_BottomPasteMaskLayer.GBP"),
-                    ('.gbo',"Gerber_BottomSilkscreenLayer.GBO"),
-                    ('.gbs',"Gerber_BottomSolderMaskLayer.GBS"),
-                    ('.gtl',"Gerber_TopLayer.GTL"),
-                    ('.gtp',"Gerber_TopPasteMaskLayer.GTP"),
-                    ('.gto',"Gerber_TopSilkscreenLayer.GTO"),
-                    ('.gts',"Gerber_TopSolderMaskLayer.GTS"),
+replace_list_end = [('.gbl',"Gerber_BottomLayer.GBL", "BottomLayer"),
+                    ('.gko',"Gerber_BoardOutlineLayer.GKO", "BoardOutlineLayer"),
+                    ('.gbp',"Gerber_BottomPasteMaskLayer.GBP",),
+                    ('.gbo',"Gerber_BottomSilkscreenLayer.GBO", "BottomSilkscreenLayer"),
+                    ('.gbs',"Gerber_BottomSolderMaskLayer.GBS", "BottomSolderMaskLayer"),
+                    ('.gtl',"Gerber_TopLayer.GTL", "TopLayer"),
+                    ('.gtp',"Gerber_TopPasteMaskLayer.GTP", "TopPasteMaskLayer"),
+                    ('.gto',"Gerber_TopSilkscreenLayer.GTO", "TopSilkscreenLayer"),
+                    ('.gts',"Gerber_TopSolderMaskLayer.GTS", "TopSolderMaskLayer"),
                     ('.gd1',"Drill_Through.GD1"),
                     ('.gm1',"Gerber_MechanicalLayer1.GM1"),
                     ('.gm13',"Gerber_MechanicalLayer13.GM13")]
@@ -85,6 +85,7 @@ def patchSingleFile(filename, path_out):
 
     # 检查文件类型并给新文件取好相应的名称，写入识别头和原来的文件内容
     hit_flag = 0
+    currentLayer = ""
 
     for replace_couple in replace_list_end:
         if filename.endswith(replace_couple[0]):
@@ -102,7 +103,7 @@ def patchSingleFile(filename, path_out):
     if hit_flag == 1:
         hit_flag = 0
 
-        file_new.write(jlcHeader)
+        file_new.write(gerberHeader)
 
         for line in lines:
             file_new.write(line)
@@ -128,7 +129,6 @@ def pathInit(path_out):
             os.remove(path)
 
 if __name__ == "__main__":
-    print(jlcHeader)
     gerberFilesDir = input("Enter the Gerber output directory: ")
     os.chdir(gerberFilesDir)
     pathInit("patched")
