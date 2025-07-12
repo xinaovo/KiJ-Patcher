@@ -133,7 +133,7 @@ def pathInit(path_out):
 if __name__ == "__main__":
     # Command line options parser init.
     parser = argparse.ArgumentParser(prog="KiJ Patcher",
-                                     usage="%(prog)s -i <input> -o <output>",
+                                     usage="kijpatcher -i <input> -o <output>",
                                      description="Patch KiCad generated gerber file to complies with JLC rules.",
                                      )
     parser.add_argument("-i", "--input-folder", required=True, help="PATH to gerber files directory")
