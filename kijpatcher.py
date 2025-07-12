@@ -139,8 +139,6 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--input-folder", required=True, help="PATH to gerber files directory")
     parser.add_argument("-o", "--output-file", required=False, help="PATH to output file")
     args = parser.parse_args()
-    print(args)
-
 
     gerberFilesDir = args.input_folder
     os.chdir(gerberFilesDir)
