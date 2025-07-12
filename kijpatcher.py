@@ -19,6 +19,7 @@ import os
 import shutil
 import zipfile
 import datetime
+import argparse
 
 # 下单用的文件的位置
 path_final = "patched"
@@ -128,8 +129,20 @@ def pathInit(path_out):
         except OSError:
             os.remove(path)
 
+# Program Entry
 if __name__ == "__main__":
-    gerberFilesDir = input("Enter the Gerber output directory: ")
+    # Command line options parser init.
+    parser = argparse.ArgumentParser(prog="KiJ Patcher",
+                                     usage="%(prog)s -i <input> -o <output>",
+                                     description="Patch KiCad generated gerber file to complies with JLC rules.",
+                                     )
+    parser.add_argument("-i", "--input-folder", required=True, help="PATH to gerber files directory")
+    parser.add_argument("-o", "--output-file", required=False, help="PATH to output file")
+    args = parser.parse_args()
+    print(args)
+
+
+    gerberFilesDir = args.input_folder
     os.chdir(gerberFilesDir)
     pathInit("patched")
 
@@ -144,12 +157,16 @@ if __name__ == "__main__":
                 patchSingleFile(os.path.join(gerberFilesDir, p), os.path.join(os.getcwd(), path_final))
                 file_count += 1
 
-    with open(gerberFilesDir +"/" + path_final + "/PCB下单必读.txt", "w") as tipstxt:
+    with open(gerberFilesDir + "/" + path_final + "/PCB下单必读.txt", "w") as tipstxt:
         tipstxt.write(jlc_order_tips_txt)
     
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 
-    outputFileName = "PATCHED"  + '-' + timestamp + ".zip"
+    outputFilePath = ""
+    if args.output_file == None:
+        outputFilePath = args.input_folder + "/" + "PATCHED"  + '-' + timestamp + ".zip"
+    else:
+        outputFilePath = args.output_file
 
-    zipFolder(path_final , outputFileName)
-    print("Patched Gerber files saved as", outputFileName)
+    zipFolder(path_final , outputFilePath)
+    print("Patched Gerber files saved as", outputFilePath)
