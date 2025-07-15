@@ -28,6 +28,7 @@ options:
 ## Copyright and Credits
 
 Copyright (c) 2024-2025 Xina.
+
 Copyright (c) 2023 ngHackerX86.
 
 JLC and EasyEDA are registered trademarks of Shenzhen JLC Technology Group Co., Ltd and its subsidiaries. We makes contextual use of the trademarks of Shenzhen JLC Technology Group Co., Ltd and its subsidiaries to indicate the function of the program.
