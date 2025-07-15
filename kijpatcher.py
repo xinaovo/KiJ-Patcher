@@ -24,7 +24,7 @@ import argparse
 # 下单用的文件的位置
 path_final = "patched"
 
-# 用于检查文件是否为Gerber文件以判断是否进行替换操作
+# Gerber files filter
 file_filter = ('.gbl','.gbs','.gbp','.gbo','.gm1','gm13',
                '.gtl','.gts','.gtp','.gto','.drl','.G1',
                '.G2','.gko')
@@ -45,7 +45,7 @@ jlc_order_tips_txt="""如何进行PCB下单
 请查看：
 https://docs.lceda.cn/cn/PCB/Order-PCB"""
 
-# 两张对应表，分别根据结尾和文件名来判断该给什么生成的文件什么名称
+# Replace list of file suffix and file name.
 replace_list_end = [('.gbl',"Gerber_BottomLayer.GBL", "BottomLayer"),
                     ('.gko',"Gerber_BoardOutlineLayer.GKO", "BoardOutlineLayer"),
                     ('.gbp',"Gerber_BottomPasteMaskLayer.GBP",),
@@ -69,9 +69,9 @@ replace_list_contain = [('_PCB-PTH', "Drill_PTH_Through.DRL"),
 
 def zipFolder(folder_path, output_path):
     """
-    压缩指定路径下的文件夹
-    :param folder_path: 要压缩的文件夹路径
-    :param output_path: 压缩文件的输出路径
+    Compress a folder
+    :param folder_path: Path to input folder
+    :param output_path: Path to output .zip file.
     """
     with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as zip:
         for root, dirs, files in os.walk(folder_path):
@@ -79,12 +79,12 @@ def zipFolder(folder_path, output_path):
                 file_path = os.path.join(root, file)
                 zip.write(file_path, os.path.relpath(file_path, folder_path))
 
-# 读取Gerber文件和钻孔文件，修改名称并给Gerber文件内容添加识别头后写入到输出文件夹
+# Read Gerber and drill file, add JLC-specific header and write it to output dir with corresponding name.
 def patchSingleFile(filename, path_out):
-    # 按行读取文件内容
+    # Read file by line
     lines = open(filename).readlines()
 
-    # 检查文件类型并给新文件取好相应的名称，写入识别头和原来的文件内容
+    # Rename file with name corresponding to the filetype and add JLC specific header
     hit_flag = 0
     currentLayer = ""
 
@@ -112,7 +112,7 @@ def patchSingleFile(filename, path_out):
         file_new.close()
 
 def pathInit(path_out):
-    # 检查下目录是否存在，没有就创建
+    # Create output directory if it doesn't exist
     folder_out = os.path.exists(path_out)
     if not folder_out:
         print("Directory %s not found, creating now..." % path_out)
@@ -120,7 +120,7 @@ def pathInit(path_out):
     else:
         print("Directory \"%s\" exists. Skipping..." % path_out)
 
-    # 清空目录
+    # Empty the directory
     print("Directory is not empty. Deleting everything...")
     for files in os.listdir(path_out):
         path = os.path.join(path_out, files)
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     file_count = 0
     fileList = os.listdir(gerberFilesDir)
 
-    # 遍历out目录下的文件，识别类型并进行相应的处理
+    # Iterate files in the gerber dir and patch them/.
     for p in fileList:
         if(os.path.isfile(os.path.join(gerberFilesDir, p))):
             if(p.endswith(file_filter)):
