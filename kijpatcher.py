@@ -1,7 +1,7 @@
 """
     KIJ-Patcher. Patch KiCad generated gerber file to complies with JLC rules.
 
-    Copyright (C) 2024 Xina.
+    Copyright (C) 2024-2025 Xina.
     Copyright (C) 2023 ngHackerX86.
 
     This is a free software released under GNU GPLv2. See LICENSE for more information.
