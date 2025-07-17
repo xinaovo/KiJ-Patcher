@@ -32,7 +32,8 @@ fileFilter = ('.gbl','.gbs','.gbp','.gbo','.gm1','gm13',
                '.G2','.gko')
 
 # EasyEDA version string
-easyedaVersionString = "6.5.50"
+EASYEDA_VERSION_STRING_STD = "EasyEDA v6.5.50"
+EASYEDA_VERSION_STRING_PRO = "EasyEDA Pro v2.2.40.3"
 
 # Order tips text
 jlcOrderTipsText="""如何进行PCB下单
@@ -86,7 +87,7 @@ def generateRandomString(length: int):
 
 def getGerberHeader(layer, versionString, timestamp, id1, id2):
     gerberHeader="""G04 Layer: {}*
-G04 EasyEDA v{}, {}*
+G04 {}, {}*
 G04 {},{},10*
 G04 Gerber Generator version 0.2*
 G04 Scale: 100 percent, Rotated: No, Reflected: No *
@@ -97,7 +98,7 @@ G04 leading zeros omitted , absolute positions ,3 integer and 6 decimal *""".for
     return gerberHeader
 
 # Read Gerber and drill file, add JLC-specific header and write it to output dir with corresponding name.
-def patchSingleFile(filename, outputPath, id1, id2):
+def patchSingleFile(filename, outputPath, easyedaVersion, id1, id2):
     # Read file by line
     lines = open(filename).readlines()
 
@@ -127,7 +128,7 @@ def patchSingleFile(filename, outputPath, id1, id2):
         if len(currentLayer) == 0:
             currentLayer = "BottomLayer"
 
-        newFile.write(getGerberHeader(currentLayer,easyedaVersionString, datetime.datetime.now(), id1, id2))
+        newFile.write(getGerberHeader(currentLayer,easyedaVersion, datetime.datetime.now(), id1, id2))
 
         for line in lines:
             newFile.write(line)
@@ -166,6 +167,7 @@ This is a free software released under GNU GPLv2. See LICENSE for more informati
                                      )
     parser.add_argument("-i", "--input-folder", required=True, help="PATH to gerber files directory")
     parser.add_argument("-o", "--output-file", required=False, help="PATH to output file")
+    parser.add_argument("-t", "--version-string-type", required=False, default="std", choices=["std", "pro"], help="Specify EasyEDA version type string in Gerber header")
     args = parser.parse_args()
 
     gerberFilesDir = args.input_folder
@@ -178,11 +180,18 @@ This is a free software released under GNU GPLv2. See LICENSE for more informati
     # Iterate files in the gerber dir and patch them/.
     randomID1 = generateRandomString(RANDOM_ID_LENGTH)
     randomID2 = generateRandomString(RANDOM_ID_LENGTH)
+
+    easyedaVersionString = ""
+    if(args.version_string_type == "pro"):
+        easyedaVersionString = EASYEDA_VERSION_STRING_PRO
+    else:
+        easyedaVersionString = EASYEDA_VERSION_STRING_STD
+
     for p in fileList:
         if(os.path.isfile(os.path.join(gerberFilesDir, p))):
             if(p.endswith(fileFilter)):
                 print("Gerber file %s found, patching..." % p)
-                patchSingleFile(os.path.join(gerberFilesDir, p), os.path.join(os.getcwd(), patchedFilesPath), randomID1, randomID2)
+                patchSingleFile(os.path.join(gerberFilesDir, p), os.path.join(os.getcwd(), patchedFilesPath), easyedaVersionString, randomID1, randomID2)
                 fileCount += 1
 
     with open(gerberFilesDir + "/" + patchedFilesPath + "/PCB下单必读.txt", "w") as tipstxt:
