@@ -24,7 +24,7 @@ import random
 
 PROGRAM_VERSION_STRING = "V0.99 dev"
 # Output path of patched files
-patchedFilesPath = "patched"
+PATCHED_FILES_TEMPORARY_DIRECTORY_NAME = "patched"
 
 # Gerber files filter
 fileFilter = ('.gbl','.gbs','.gbp','.gbo','.gm1','gm13',
@@ -141,26 +141,25 @@ def pathInit(outputPath):
     if not outputFolder:
         print("Directory %s not found, creating now..." % outputPath)
         os.makedirs(outputPath)
-    else:
-        print("Directory \"%s\" exists. Skipping..." % outputPath)
-
-    # Empty the directory
-    print("Directory is not empty. Deleting everything...")
-    for files in os.listdir(outputPath):
-        path = os.path.join(outputPath, files)
-        try:
-            shutil.rmtree(path)
-        except OSError:
-            os.remove(path)
+    else: # Empty the directory
+        print("Deleting everything in the directory...")
+        for files in os.listdir(outputPath):
+            path = os.path.join(outputPath, files)
+            try:
+                shutil.rmtree(path)
+            except OSError:
+              os.remove(path)
 
 # Program Entry
 if __name__ == "__main__":
-    # Command line options parser init.
+    
     print("""KiJ Patcher {}
 Copyright (c) 2024-2025 Xina.
 Copyright (c) 2023 ngHackerX86.
 This is a free software released under GNU GPLv2. See LICENSE for more information.
 """.format(PROGRAM_VERSION_STRING))
+    
+    # Command line options parser init.
     parser = argparse.ArgumentParser(prog="KiJ Patcher",
                                      usage="kijpatcher -i <input> -o <output>",
                                      description="Patch KiCad generated gerber file to complies with JLC rules.",
@@ -172,7 +171,7 @@ This is a free software released under GNU GPLv2. See LICENSE for more informati
 
     gerberFilesDir = args.input_folder
     os.chdir(gerberFilesDir)
-    pathInit("patched")
+    pathInit(PATCHED_FILES_TEMPORARY_DIRECTORY_NAME)
 
     fileCount = 0
     fileList = os.listdir(gerberFilesDir)
@@ -191,10 +190,10 @@ This is a free software released under GNU GPLv2. See LICENSE for more informati
         if(os.path.isfile(os.path.join(gerberFilesDir, p))):
             if(p.endswith(fileFilter)):
                 print("Gerber file %s found, patching..." % p)
-                patchSingleFile(os.path.join(gerberFilesDir, p), os.path.join(os.getcwd(), patchedFilesPath), easyedaVersionString, randomID1, randomID2)
+                patchSingleFile(os.path.join(gerberFilesDir, p), os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME), easyedaVersionString, randomID1, randomID2)
                 fileCount += 1
 
-    with open(gerberFilesDir + "/" + patchedFilesPath + "/PCB下单必读.txt", "w") as tipstxt:
+    with open(os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME) + "/PCB下单必读.txt", "w") as tipstxt:
         tipstxt.write(jlcOrderTipsText)
     
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
@@ -205,5 +204,8 @@ This is a free software released under GNU GPLv2. See LICENSE for more informati
     else:
         outputFilePath = args.output_file
 
-    zipFolder(patchedFilesPath , outputFilePath)
+    zipFolder(PATCHED_FILES_TEMPORARY_DIRECTORY_NAME , outputFilePath)
     print("Patched Gerber files saved as", outputFilePath)
+    print("Cleaning up temporary files and directory...")
+    pathInit(os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME))
+    os.removedirs(os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME))
