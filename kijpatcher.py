@@ -36,7 +36,7 @@ EASYEDA_VERSION_STRING_STD = "EasyEDA v6.5.50"
 EASYEDA_VERSION_STRING_PRO = "EasyEDA Pro v2.2.40.3"
 
 # Order tips text
-jlcOrderTipsText="""如何进行PCB下单
+JLC_ORDER_TIPS_TEXT="""如何进行PCB下单
 
 请查看：
 https://docs.lceda.cn/cn/PCB/Order-PCB"""
@@ -193,8 +193,8 @@ This is a free software released under GNU GPLv2. See LICENSE for more informati
                 patchSingleFile(os.path.join(gerberFilesDir, p), os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME), easyedaVersionString, randomID1, randomID2)
                 fileCount += 1
 
-    with open(os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME) + "/PCB下单必读.txt", "w") as tipstxt:
-        tipstxt.write(jlcOrderTipsText)
+    with open(os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME) + "/PCB下单必读.txt", "wb") as tipstxt:
+        tipstxt.write(JLC_ORDER_TIPS_TEXT.encode("utf-8"))
     
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 
