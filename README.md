@@ -7,7 +7,7 @@ Patch KiCad generated gerber file to complies with JLC rules.
 Make sure you have installed Python 3 on your system and configured properly.
 
 ```log
-$ python3 kijpatcher.py
+$ python3 kijpatcher.py -h
 KiJ Patcher V0.99 dev
 Copyright (c) 2024-2025 Xina.
 Copyright (c) 2023 ngHackerX86.
@@ -23,6 +23,9 @@ options:
                         PATH to gerber files directory
   -o OUTPUT_FILE, --output-file OUTPUT_FILE
                         PATH to output file
+  -t {std,pro}, --version-string-type {std,pro}
+                        Specify EasyEDA version type string in Gerber header
+
 ```
 
 ## Copyright and Credits
