@@ -44,7 +44,7 @@ https://docs.lceda.cn/cn/PCB/Order-PCB"""
 RANDOM_ID_LENGTH = 32
 
 # Replace list of file suffix and file name.
-replaceListFileSuffix = [('.gbl',"Gerber_BottomLayer.GBL", "BottomLayer"),
+gerberReplaceListFileSuffix = [('.gbl',"Gerber_BottomLayer.GBL", "BottomLayer"),
                     ('.gko',"Gerber_BoardOutlineLayer.GKO", "BoardOutlineLayer"),
                     ('.gbp',"Gerber_BottomPasteMaskLayer.GBP", "BottomPasteMaskLayer"),
                     ('.gbo',"Gerber_BottomSilkscreenLayer.GBO", "BottomSilkscreenLayer"),
@@ -57,7 +57,7 @@ replaceListFileSuffix = [('.gbl',"Gerber_BottomLayer.GBL", "BottomLayer"),
                     ('.gm1',"Gerber_MechanicalLayer1.GM1", ""),
                     ('.gm13',"Gerber_MechanicalLayer13.GM13", "")]
 
-replaceListFileName = [ ('_PCB-In1_Cu', "Gerber_InnerLayer1.G1", "InnerLayer1"),
+gerberReplaceListFileName = [ ('_PCB-In1_Cu', "Gerber_InnerLayer1.G1", "InnerLayer1"),
                         ('_PCB-In2_Cu', "Gerber_InnerLayer2.G2", "InnerLayer2"),
                         ('_PCB-Edge_Cuts', "Gerber_BoardOutlineLayer.GKO", "BoardOutlineLayer")]
 
@@ -124,7 +124,7 @@ def patchSingleFile(filename, outputPath, easyedaVersion, id1, id2):
     isGerber = False
     currentLayer = ""
 
-    for fileSuffixPair in replaceListFileSuffix:
+    for fileSuffixPair in gerberReplaceListFileSuffix:
         if filename.endswith(fileSuffixPair[0]):
             newFile = open(outputPath + '/' + fileSuffixPair[1], 'w')
             currentLayer = fileSuffixPair[2]
@@ -133,7 +133,7 @@ def patchSingleFile(filename, outputPath, easyedaVersion, id1, id2):
             break
 
     if flag == 0:
-        for fileNamePair in replaceListFileName:
+        for fileNamePair in gerberReplaceListFileName:
             if filename.find(fileNamePair[0]) != -1:
                 newFile = open(outputPath + '/' + fileNamePair[1], 'w')
                 currentLayer = fileNamePair[2]
