@@ -228,11 +228,11 @@ This is a free software released under GNU GPLv2. See LICENSE for more informati
     with open(os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME) + "/PCB下单必读.txt", "wb") as tipstxt:
         tipstxt.write(JLC_ORDER_TIPS_TEXT.encode("utf-8"))
     
-    timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+    timestamp = datetime.datetime.now()
 
     outputFilePath = ""
     if args.output_file == None:
-        outputFilePath = args.input_folder + "/" + "Gerber"  + '-' + timestamp + ".zip"
+        outputFilePath = args.input_folder + "/" + "Gerber"  + '_' + timestamp.strftime('%Y-%m-%d') + ".zip"
     else:
         outputFilePath = args.output_file
 
