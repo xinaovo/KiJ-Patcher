@@ -28,8 +28,8 @@ PATCHED_FILES_TEMPORARY_DIRECTORY_NAME = "patched"
 
 # Gerber files filter
 fileFilter = ('.gbl','.gbs','.gbp','.gbo','.gm1','gm13',
-               '.gtl','.gts','.gtp','.gto','.drl','.G1',
-               '.G2','.gko')
+               '.gtl','.gts','.gtp','.gto','.drl','.g1',
+               '.g2','g3','g4','.gko')
 
 # EasyEDA version string
 EASYEDA_VERSION_STRING_STD = "EasyEDA v6.5.50"
@@ -57,9 +57,11 @@ gerberReplaceListFileSuffix = [('.gbl',"Gerber_BottomLayer.GBL", "BottomLayer"),
                     ('.gm1',"Gerber_MechanicalLayer1.GM1", ""),
                     ('.gm13',"Gerber_MechanicalLayer13.GM13", "")]
 
-gerberReplaceListFileName = [ ('_PCB-In1_Cu', "Gerber_InnerLayer1.G1", "InnerLayer1"),
-                        ('_PCB-In2_Cu', "Gerber_InnerLayer2.G2", "InnerLayer2"),
-                        ('_PCB-Edge_Cuts', "Gerber_BoardOutlineLayer.GKO", "BoardOutlineLayer")]
+gerberReplaceListFileName = [ ('-In1_Cu', "Gerber_InnerLayer1.G1", "InnerLayer1"),
+                        ('-In2_Cu', "Gerber_InnerLayer2.G2", "InnerLayer2"),
+                        ('-In3_Cu', "Gerber_InnerLayer3.G3", "InnerLayer3"),
+                        ('-In4_Cu', "Gerber_InnerLayer4.G2", "InnerLayer4"),
+                        ('-Edge_Cuts', "Gerber_BoardOutlineLayer.GKO", "BoardOutlineLayer")]
 
 #drillReplaceListFileSuffix = []
 
