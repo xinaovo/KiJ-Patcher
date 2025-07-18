@@ -27,7 +27,7 @@ PROGRAM_VERSION_STRING = "V0.99 dev"
 PATCHED_FILES_TEMPORARY_DIRECTORY_NAME = "patched"
 
 # Gerber files filter
-fileFilter = ('.gbl','.gbs','.gbp','.gbo','.gm1','gm13',
+FILE_FILTERS = ('.gbl','.gbs','.gbp','.gbo','.gm1','gm13',
                '.gtl','.gts','.gtp','.gto','.drl','.g1',
                '.g2','g3','g4','.gko')
 
@@ -176,7 +176,7 @@ def pathInit(outputPath):
         print("Directory {} not found, creating now...".format(outputPath))
         os.makedirs(outputPath)
     else: # Empty the directory
-        print("Deleting everything in the directory...")
+        print("Deleting everything in directory {}...".format(outputPath))
         for files in os.listdir(outputPath):
             path = os.path.join(outputPath, files)
             try:
@@ -222,7 +222,7 @@ This is a free software released under GNU GPLv2. See LICENSE for more informati
 
     for p in fileList:
         if(os.path.isfile(os.path.join(gerberFilesDir, p))):
-            if(p.endswith(fileFilter)):
+            if(p.endswith(FILE_FILTERS)):
                 print("Gerber/Drill file %s found, patching..." % p)
                 patchSingleFile(os.path.join(gerberFilesDir, p), os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME), easyedaVersionString, randomID1, randomID2)
                 fileCount += 1
@@ -232,9 +232,15 @@ This is a free software released under GNU GPLv2. See LICENSE for more informati
     
     timestamp = datetime.datetime.now()
 
+    projectName = ""
+    for file in fileList:
+        if(os.path.isfile(os.path.join(gerberFilesDir, file))):
+            if(file.endswith("-Edge_Cuts.gm1")):
+                projectName = file[0:file.find("-Edge_Cuts.gm1", 0)]
+    
     outputFilePath = ""
     if args.output_file == None:
-        outputFilePath = args.input_folder + "/" + "Gerber"  + '_' + timestamp.strftime('%Y-%m-%d') + ".zip"
+        outputFilePath = args.input_folder + "/" + "Gerber_{}_{}.zip".format(projectName, timestamp.strftime('%Y-%m-%d'))
     else:
         outputFilePath = args.output_file
 
