@@ -57,13 +57,16 @@ replaceListFileSuffix = [('.gbl',"Gerber_BottomLayer.GBL", "BottomLayer"),
                     ('.gm1',"Gerber_MechanicalLayer1.GM1", ""),
                     ('.gm13',"Gerber_MechanicalLayer13.GM13", "")]
 
-replaceListFileName = [('_PCB-PTH', "Drill_PTH_Through.DRL", ""),
-                        ('_PCB-NPTH', "Drill_NPTH_Through.DRL", ""),
-                        ('-PTH', "Drill_PTH_Through.DRL", ""),
-                        ('-NPTH', "Drill_NPTH_Through.DRL", ""),
-                        ('_PCB-In1_Cu', "Gerber_InnerLayer1.G1", "InnerLayer1"),
+replaceListFileName = [ ('_PCB-In1_Cu', "Gerber_InnerLayer1.G1", "InnerLayer1"),
                         ('_PCB-In2_Cu', "Gerber_InnerLayer2.G2", "InnerLayer2"),
                         ('_PCB-Edge_Cuts', "Gerber_BoardOutlineLayer.GKO", "BoardOutlineLayer")]
+
+#drillReplaceListFileSuffix = []
+
+drillReplaceListFileName = [('_PCB-PTH', "Drill_PTH_Through.DRL", "PTH_Through"),
+                        ('_PCB-NPTH', "Drill_NPTH_Through.DRL", "NPTH_Through"),
+                        ('-PTH', "Drill_PTH_Through.DRL", " PTH_Through"),
+                        ('-NPTH', "Drill_NPTH_Through.DRL", "NPTH_Through")]
 
 def zipFolder(folderPath, outputPath):
     """
@@ -97,6 +100,20 @@ G04 leading zeros omitted , absolute positions ,3 integer and 6 decimal *""".for
                                                                                        id1, id2)
     return gerberHeader
 
+def getDrillHeader(layer, versionString, timestamp, id1, id2):
+    drillHeader="""M48
+METRIC,LZ,000.000
+;FILE_FORMAT=3:3
+;TYPE=NON_PLATED
+;Layer: {}
+;{}, {}
+;{},{},10
+;Gerber Generator version 0.2
+""".format(layer,
+            versionString, timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+            id1, id2)
+    return drillHeader
+
 # Read Gerber and drill file, add JLC-specific header and write it to output dir with corresponding name.
 def patchSingleFile(filename, outputPath, easyedaVersion, id1, id2):
     # Read file by line
@@ -104,6 +121,7 @@ def patchSingleFile(filename, outputPath, easyedaVersion, id1, id2):
 
     # Rename file with name corresponding to the filetype and add JLC specific header
     flag = 0
+    isGerber = False
     currentLayer = ""
 
     for fileSuffixPair in replaceListFileSuffix:
@@ -111,6 +129,7 @@ def patchSingleFile(filename, outputPath, easyedaVersion, id1, id2):
             newFile = open(outputPath + '/' + fileSuffixPair[1], 'w')
             currentLayer = fileSuffixPair[2]
             flag = 1
+            isGerber = True
             break
 
     if flag == 0:
@@ -119,6 +138,16 @@ def patchSingleFile(filename, outputPath, easyedaVersion, id1, id2):
                 newFile = open(outputPath + '/' + fileNamePair[1], 'w')
                 currentLayer = fileNamePair[2]
                 flag = 1
+                isGerber = True
+                break
+
+    if flag == 0:
+        for fileNamePair in drillReplaceListFileName:
+            if filename.find(fileNamePair[0]) != -1:
+                newFile = open(outputPath + '/' + fileNamePair[1], 'w')
+                currentLayer = fileNamePair[2]
+                flag = 1
+                isGerber = False
                 break
 
     if flag == 1:
@@ -128,7 +157,10 @@ def patchSingleFile(filename, outputPath, easyedaVersion, id1, id2):
         if len(currentLayer) == 0:
             currentLayer = "BottomLayer"
 
-        newFile.write(getGerberHeader(currentLayer,easyedaVersion, datetime.datetime.now(), id1, id2))
+        if(isGerber):
+            newFile.write(getGerberHeader(currentLayer,easyedaVersion, datetime.datetime.now(), id1, id2))
+        else:
+            newFile.write(getDrillHeader(currentLayer,easyedaVersion, datetime.datetime.now(), id1, id2))
 
         for line in lines:
             newFile.write(line)
@@ -139,7 +171,7 @@ def pathInit(outputPath):
     # Create output directory if it doesn't exist
     outputFolder = os.path.exists(outputPath)
     if not outputFolder:
-        print("Directory %s not found, creating now..." % outputPath)
+        print("Directory {} not found, creating now...".format(outputPath))
         os.makedirs(outputPath)
     else: # Empty the directory
         print("Deleting everything in the directory...")
@@ -189,7 +221,7 @@ This is a free software released under GNU GPLv2. See LICENSE for more informati
     for p in fileList:
         if(os.path.isfile(os.path.join(gerberFilesDir, p))):
             if(p.endswith(fileFilter)):
-                print("Gerber file %s found, patching..." % p)
+                print("Gerber/Drill file %s found, patching..." % p)
                 patchSingleFile(os.path.join(gerberFilesDir, p), os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME), easyedaVersionString, randomID1, randomID2)
                 fileCount += 1
 
