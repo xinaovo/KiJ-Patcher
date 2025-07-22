@@ -22,7 +22,7 @@ import datetime
 import argparse
 import random
 
-PROGRAM_VERSION_STRING = "V0.99 dev"
+PROGRAM_VERSION_STRING = "0.9.9"
 # Output path of patched files
 PATCHED_FILES_TEMPORARY_DIRECTORY_NAME = "patched"
 
@@ -198,12 +198,20 @@ This is a free software released under GNU GPLv2. See LICENSE for more informati
                                      usage="kijpatcher -i <input> -o <output>",
                                      description="Patch KiCad generated gerber file to complies with JLC rules.",
                                      )
-    parser.add_argument("-i", "--input-folder", required=True, help="PATH to gerber files directory")
-    parser.add_argument("-o", "--output-file", required=False, help="PATH to output file")
+    parser.add_argument("-i", "--input-folder", help="PATH to gerber files directory")
+    parser.add_argument("-o", "--output-file", help="PATH to output file, if FULL path is given. Otherwise, it specifies the output file name.")
     parser.add_argument("-t", "--version-string-type", required=False, default="std", choices=["std", "pro"], help="Specify EasyEDA version type string in Gerber header")
+    parser.add_argument('positional_input', nargs='?', help='Lazy mode, specify gerbers files directory only')
     args = parser.parse_args()
 
-    gerberFilesDir = args.input_folder
+    if args.input_folder:
+        gerberFilesDir = args.input_folder
+    elif args.positional_input:
+        gerberFilesDir = args.positional_input
+    else:
+        print("ERROR: No gerber files directory specified.")
+        exit(1)
+    print(gerberFilesDir)
     os.chdir(gerberFilesDir)
     pathInit(PATCHED_FILES_TEMPORARY_DIRECTORY_NAME)
 
@@ -240,7 +248,7 @@ This is a free software released under GNU GPLv2. See LICENSE for more informati
     
     outputFilePath = ""
     if args.output_file == None:
-        outputFilePath = args.input_folder + "/" + "Gerber_{}_{}.zip".format(projectName, timestamp.strftime('%Y-%m-%d'))
+        outputFilePath = gerberFilesDir + "/" + "Gerber_{}_{}.zip".format(projectName, timestamp.strftime('%Y-%m-%d'))
     else:
         outputFilePath = args.output_file
 
