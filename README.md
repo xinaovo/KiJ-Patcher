@@ -8,21 +8,24 @@ Make sure you have installed Python 3 on your system and configured properly.
 
 ```log
 $ python3 kijpatcher.py -h
-KiJ Patcher V0.99 dev
+KiJ Patcher 0.9.9
 Copyright (c) 2024-2025 Xina.
 Copyright (c) 2023 ngHackerX86.
 This is a free software released under GNU GPLv2. See LICENSE for more information.
 
 usage: kijpatcher -i <input> -o <output>
 
-Patch KiCad generated gerber file to complies with JLC rules.
+Patch KiCad-generated gerber file to complies with JLC rules.
+
+positional arguments:
+  positional_input      Lazy mode, specify gerbers files directory only
 
 options:
   -h, --help            show this help message and exit
   -i INPUT_FOLDER, --input-folder INPUT_FOLDER
                         PATH to gerber files directory
   -o OUTPUT_FILE, --output-file OUTPUT_FILE
-                        PATH to output file
+                        PATH to output file, if FULL path is given. Otherwise, it specifies the output file name.
   -t {std,pro}, --version-string-type {std,pro}
                         Specify EasyEDA version type string in Gerber header
 

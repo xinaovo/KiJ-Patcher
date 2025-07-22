@@ -1,5 +1,5 @@
 """
-    KIJ-Patcher. Patch KiCad generated gerber file to complies with JLC rules.
+    KIJ-Patcher. Patch KiCad-generated gerber file to complies with JLC rules.
 
     Copyright (C) 2024-2025 Xina.
     Copyright (C) 2023 ngHackerX86.
@@ -185,75 +185,75 @@ def pathInit(outputPath):
               os.remove(path)
 
 # Program Entry
-if __name__ == "__main__":
+#if __name__ == "__main__":
+def main():
     
-    print("""KiJ Patcher {}
+        print("""KiJ Patcher {}
 Copyright (c) 2024-2025 Xina.
 Copyright (c) 2023 ngHackerX86.
 This is a free software released under GNU GPLv2. See LICENSE for more information.
 """.format(PROGRAM_VERSION_STRING))
     
-    # Command line options parser init.
-    parser = argparse.ArgumentParser(prog="KiJ Patcher",
+        # Command line options parser init.
+        parser = argparse.ArgumentParser(prog="KiJ Patcher",
                                      usage="kijpatcher -i <input> -o <output>",
-                                     description="Patch KiCad generated gerber file to complies with JLC rules.",
+                                     description="Patch KiCad-generated gerber file to complies with JLC rules.",
                                      )
-    parser.add_argument("-i", "--input-folder", help="PATH to gerber files directory")
-    parser.add_argument("-o", "--output-file", help="PATH to output file, if FULL path is given. Otherwise, it specifies the output file name.")
-    parser.add_argument("-t", "--version-string-type", required=False, default="std", choices=["std", "pro"], help="Specify EasyEDA version type string in Gerber header")
-    parser.add_argument('positional_input', nargs='?', help='Lazy mode, specify gerbers files directory only')
-    args = parser.parse_args()
+        parser.add_argument("-i", "--input-folder", help="PATH to gerber files directory")
+        parser.add_argument("-o", "--output-file", help="PATH to output file, if FULL path is given. Otherwise, it specifies the output file name.")
+        parser.add_argument("-t", "--version-string-type", required=False, default="std", choices=["std", "pro"], help="Specify EasyEDA version type string in Gerber header")
+        parser.add_argument('positional_input', nargs='?', help='Lazy mode, specify gerbers files directory only')
+        args = parser.parse_args()
 
-    if args.input_folder:
-        gerberFilesDir = args.input_folder
-    elif args.positional_input:
-        gerberFilesDir = args.positional_input
-    else:
-        print("ERROR: No gerber files directory specified.")
-        exit(1)
-    print(gerberFilesDir)
-    os.chdir(gerberFilesDir)
-    pathInit(PATCHED_FILES_TEMPORARY_DIRECTORY_NAME)
+        if args.input_folder:
+            gerberFilesDir = args.input_folder
+        elif args.positional_input:
+            gerberFilesDir = args.positional_input
+        else:
+            print("ERROR: No gerber files directory specified.")
+            exit(1)
+        os.chdir(gerberFilesDir)
+        pathInit(PATCHED_FILES_TEMPORARY_DIRECTORY_NAME)
 
-    fileCount = 0
-    fileList = os.listdir(gerberFilesDir)
+        fileCount = 0
+        fileList = os.listdir(gerberFilesDir)
 
-    # Iterate files in the gerber dir and patch them/.
-    randomID1 = generateRandomString(RANDOM_ID_LENGTH)
-    randomID2 = generateRandomString(RANDOM_ID_LENGTH)
+        # Iterate files in the gerber dir and patch them/.
+        randomID1 = generateRandomString(RANDOM_ID_LENGTH)
+        randomID2 = generateRandomString(RANDOM_ID_LENGTH)
 
-    easyedaVersionString = ""
-    if(args.version_string_type == "pro"):
-        easyedaVersionString = EASYEDA_VERSION_STRING_PRO
-    else:
-        easyedaVersionString = EASYEDA_VERSION_STRING_STD
+        easyedaVersionString = ""
+        if(args.version_string_type == "pro"):
+            easyedaVersionString = EASYEDA_VERSION_STRING_PRO
+        else:
+            easyedaVersionString = EASYEDA_VERSION_STRING_STD
 
-    for p in fileList:
-        if(os.path.isfile(os.path.join(gerberFilesDir, p))):
-            if(p.endswith(FILE_FILTERS)):
-                print("Gerber/Drill file %s found, patching..." % p)
-                patchSingleFile(os.path.join(gerberFilesDir, p), os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME), easyedaVersionString, randomID1, randomID2)
-                fileCount += 1
+        for p in fileList:
+            if(os.path.isfile(os.path.join(gerberFilesDir, p))):
+                if(p.endswith(FILE_FILTERS)):
+                    print("Gerber/Drill file %s found, patching..." % p)
+                    patchSingleFile(os.path.join(gerberFilesDir, p), os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME), easyedaVersionString, randomID1, randomID2)
+                    fileCount += 1
 
-    with open(os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME) + "/PCB下单必读.txt", "wb") as tipstxt:
-        tipstxt.write(JLC_ORDER_TIPS_TEXT.encode("utf-8"))
+        with open(os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME) + "/PCB下单必读.txt", "wb") as tipstxt:
+            tipstxt.write(JLC_ORDER_TIPS_TEXT.encode("utf-8"))
     
-    timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
 
-    projectName = ""
-    for file in fileList:
-        if(os.path.isfile(os.path.join(gerberFilesDir, file))):
-            if(file.endswith("-Edge_Cuts.gm1")):
-                projectName = file[0:file.find("-Edge_Cuts.gm1", 0)]
+        projectName = ""
+        for file in fileList:
+            if(os.path.isfile(os.path.join(gerberFilesDir, file))):
+                if(file.endswith("-Edge_Cuts.gm1")):
+                 projectName = file[0:file.find("-Edge_Cuts.gm1", 0)]
     
-    outputFilePath = ""
-    if args.output_file == None:
-        outputFilePath = gerberFilesDir + "/" + "Gerber_{}_{}.zip".format(projectName, timestamp.strftime('%Y-%m-%d'))
-    else:
-        outputFilePath = args.output_file
+        outputFilePath = ""
+        if args.output_file == None:
+            outputFilePath = gerberFilesDir + "/" + "Gerber_{}_{}.zip".format(projectName, timestamp.strftime('%Y-%m-%d'))
+        else:
+            outputFilePath = args.output_file
 
-    zipFolder(PATCHED_FILES_TEMPORARY_DIRECTORY_NAME , outputFilePath)
-    print("Patched Gerber files saved as", outputFilePath)
-    print("Cleaning up temporary files and directory...")
-    pathInit(os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME))
-    os.removedirs(os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME))
+        zipFolder(PATCHED_FILES_TEMPORARY_DIRECTORY_NAME , outputFilePath)
+        print("Patched Gerber files saved as", outputFilePath)
+        print("Cleaning up temporary files and directory...")
+        pathInit(os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME))
+        os.removedirs(os.path.join(os.getcwd(), PATCHED_FILES_TEMPORARY_DIRECTORY_NAME))
