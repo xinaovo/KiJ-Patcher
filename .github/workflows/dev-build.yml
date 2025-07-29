@@ -1,0 +1,60 @@
+name: Dev Build and Publish
+
+on:
+  push:
+    tags:
+      - '*'
+    branches:
+      - dev
+
+jobs:
+  build-and-release:
+    if: startsWith(github.ref, 'refs/tags/') && github.ref_protected == false && github.ref_name != ''
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Build package
+        run: python -m build
+
+      - name: Publish to TestPyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
+        run: |
+          twine upload --repository testpypi dist/*
+
+      - name: Create GitHub Release (pre-release)
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: true
+          name: Beta Build ${{ github.ref_name }} (Commit ${{ github.sha }})
+          body: |
+            Automated beta build triggered by tag ${{ github.ref_name }}
+            Built from commit: ${{ github.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPOSITORY_GITHUB_PAT }}
+
+      - name: Upload dist artifacts to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          prerelease: true
+          name: Beta Build ${{ github.ref_name }} (Commit ${{ github.sha }})
+          body: |
+            Automated beta build triggered by tag ${{ github.ref_name }}
+            Built from commit: ${{ github.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPOSITORY_GITHUB_PAT }}
