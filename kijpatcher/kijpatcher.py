@@ -22,7 +22,7 @@ import datetime
 import argparse
 import random
 
-PROGRAM_VERSION_STRING = "0.9.9"
+PROGRAM_VERSION_STRING = "1.0.0-beta1"
 # Output path of patched files
 PATCHED_FILES_TEMPORARY_DIRECTORY_NAME = "patched"
 

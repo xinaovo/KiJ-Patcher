@@ -11,7 +11,7 @@ Install KiJ-Patcher using pip.
 
 ```log
 $ python3 -m kijpatcher
-KiJ Patcher 0.9.9
+KiJ Patcher 1.0.0-beta1
 Copyright (c) 2024-2025 Xina.
 Copyright (c) 2023 ngHackerX86.
 This is a free software released under GNU GPLv2. See LICENSE for more information.
