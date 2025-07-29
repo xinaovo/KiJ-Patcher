@@ -34,6 +34,13 @@ options:
 
 ```
 
+## Fabrication Output Settings
+
+The following screenshots show the proper fabrication output settings when using KiJ-Patcher, which ensure KiJ-Patcher could recognize and patch the fabrication output files properly.
+
+![image](docs/fabrication_output_settings_gerber.png)
+![image](docs/fabrication_output_settings_drill.png)
+
 ## Copyright and Credits
 
 Copyright (c) 2024-2025 Xina.
