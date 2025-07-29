@@ -6,8 +6,11 @@ Patch KiCad generated gerber file to complies with JLC rules.
 
 Make sure you have installed Python 3 on your system and configured properly.
 
+Install KiJ-Patcher using pip.
+`pip install kijpatcher`
+
 ```log
-$ python3 kijpatcher.py -h
+$ python3 -m kijpatcher
 KiJ Patcher 0.9.9
 Copyright (c) 2024-2025 Xina.
 Copyright (c) 2023 ngHackerX86.
