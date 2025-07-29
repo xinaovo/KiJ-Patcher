@@ -40,7 +40,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           prerelease: true
-          name: Beta Build ${{ github.ref_name }} (Commit ${{ github.sha }})
+          name: Beta Build ${{ github.ref_name }}
           body: |
             Automated beta build triggered by tag ${{ github.ref_name }}
             Built from commit: ${{ github.sha }}
@@ -52,7 +52,7 @@ jobs:
         with:
           files: dist/*
           prerelease: true
-          name: Beta Build ${{ github.ref_name }} (Commit ${{ github.sha }})
+          name: Beta Build ${{ github.ref_name }}
           body: |
             Automated beta build triggered by tag ${{ github.ref_name }}
             Built from commit: ${{ github.sha }}
