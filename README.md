@@ -38,7 +38,11 @@ options:
 
 The following screenshots show the proper fabrication output settings when using KiJ-Patcher, which ensure KiJ-Patcher could recognize and patch the fabrication output files properly.
 
+### Gerber Settings
+
 ![image](docs/fabrication_output_settings_gerber.png)
+
+### Drill Settings
 
 ![image](docs/fabrication_output_settings_drill.png)
 
