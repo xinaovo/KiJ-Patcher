@@ -39,7 +39,7 @@ jobs:
       - name: Create GitHub Release (pre-release)
         uses: softprops/action-gh-release@v2
         with:
-          prerelease: true
+          prerelease: false
           name: Release Build ${{ github.ref_name }}
           body: |
             Automated release build triggered by tag ${{ github.ref_name }}
@@ -51,7 +51,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*
-          prerelease: true
+          prerelease: false
           name: Release Build ${{ github.ref_name }}
           body: |
             Automated release build triggered by tag ${{ github.ref_name }}

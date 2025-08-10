@@ -1,6 +1,6 @@
 [project]
 name = "kijpatcher"
-version = "1.0.0-beta1"
+version = "1.0.0"
 description = "A CLI tool to Patch KiCad-generated gerber file to complies with JLC rules."
 authors = [
     { name="Xina", email="realxinaovo@gmail.com" }
