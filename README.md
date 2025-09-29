@@ -1,3 +1,8 @@
+# Notification
+
+## JLC changed the detection algorithm recently. Therefore, this project may not work properly.
+## For more information and alternatives, see another project [TransJLC](https://github.com/HalfSweet/TransJLC)
+
 # KiJ-Patcher
 
 Patch KiCad generated gerber file to complies with JLC rules.
